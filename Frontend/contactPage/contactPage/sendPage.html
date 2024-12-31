@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <script src="Scripts/jquery-3.7.1.min.js"></script>
+
+     
+</head>
+<body> 
+    <div class="send">
+        <h1>SEND MESSAGE</h1> 
+        <div class="kutu">
+            <form id="contactFrom" method="post">
+                <div class="stateMessage"></div>
+                <div class="text">
+                    <input type="text" name="Ad" placeholder="Ad" />
+                    <input type="text" name="Soyad" placeholder="Soyad" />
+                    <input type="text" name="Email" placeholder="E-Mail" />
+                    <textarea name="Message" placeholder="Mesaj"></textarea>
+                </div>
+                <div class="checkdiv">
+                    <label class="container">
+                        <input type="checkbox" name="Check">
+                        Kişisel veilerin korunması kanunu(KVK). Okudum, onaylıyorum.
+                    </label>
+                </div>
+                <div class="textalt">
+                    <input type="button" id="sendButton" value="Send" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#sendButton').click(function () {
+                const messageText = $('textarea[name="Message"]').val();
+                if (messageText.length > 250) {
+                    $('.stateMessage').text('250 karakterden fazla veri girdiniz.');
+                    return;
+                }
+
+
+                const data = {
+                    Ad: $('input[name="Ad"]').val(),
+                    Soyad: $('input[name="Soyad"]').val(),
+                    Email: $('input[name="Email"]').val(),
+                    Check: $('input[name="Check"]').is(':checked') ? 1 : 0,
+                    Message: $('textarea[name="Message"]').val()
+                };
+
+                $.ajax({
+                    url: 'http://localhost:8090/api/send',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        $('.stateMessage').text('Mesajınız Gönderildi.');
+                    },
+                    error: function (xhr, status, error) {
+                        $('.stateMessage').text('Mesaj Gönderilemedi: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
